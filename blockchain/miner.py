@@ -23,7 +23,9 @@ def proof_of_work(last_proof):
     start = timer()
 
     print(f"Searching for next proof")
+
     proof = 0
+    
     while valid_proof(last_proof, proof) is False:
         proof += 1
 
@@ -39,13 +41,21 @@ def valid_proof(last_hash, proof):
 
     IE:  last_hash: ...AE9123456, new hash 123456E88...
     """
+    
+    # guess = f"{proof}".encode()
+    # guess_hash = hashlib.sha256(guess).hexdigest()
 
-    guess = f"{last_hash}{proof}".encode()
+    # print('last hash', last_hash)
+    # print('guess hash', guess_hash[0:6])
+    # return guess_hash[0:6] == last_hash[-6:]
+
+    prev_proof = f'{last_hash}'.encode()
+    prev_proof_hashed = hashlib.sha256(prev_proof).hexdigest()
+
+    guess = f'{proof}'.encode()
     guess_hash = hashlib.sha256(guess).hexdigest()
 
-    print('last hash', last_hash)
-    print('guess hash', guess_hash[0:6])
-    return guess_hash[0:6]
+    return guess_hash[:6] == prev_proof_hashed[-6:] 
 
 if __name__ == '__main__':
     # What node are we interacting with?
